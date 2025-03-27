@@ -1,0 +1,6 @@
+'*.nc' filter=lfs diff=lfs merge=lfs -text
+'*.csv' filter=lfs diff=lfs merge=lfs -text
+Assets/Art/Skybox/Real[[:space:]]Stars[[:space:]]Skybox/StarSkybox04/* filter=lfs diff=lfs merge=lfs -text
+'*Assets/Art' filter=lfs diff=lfs merge=lfs -text
+JermaInSpace/Assets/Art/Skybox/Real[[:space:]]Stars[[:space:]]Skybox/StarSkybox04/* filter=lfs diff=lfs merge=lfs -text
+assets filter=lfs diff=lfs merge=lfs -text
