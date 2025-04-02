@@ -3,51 +3,34 @@ using TMPro;
 
 public class AudioLogPlayer : MonoBehaviour
 {
-    [Header("UI Elements")]
-    public TextMeshProUGUI audioPromptText; // Assign in Inspector
-
-    [Header("Audio Logs")]
-    public AudioSource[] audioLogs; // Assign audio sources in Inspector
-
-    private PlayerItems playerItems; // Reference to PlayerItems
-    private AudioSource currentPlayingAudio; // Track current audio playing
+    public AudioClip[] audioLogs; // Assign 9 audio clips in the Inspector
+    private AudioSource audioSource;
+    public TextMeshProUGUI audioLogUI;
+    private PlayerItems playerItems;
 
     void Start()
     {
-        playerItems = GetComponent<PlayerItems>();
-
-        if (audioPromptText != null)
-        {
-            audioPromptText.enabled = false; // Hide UI initially
-        }
+        audioSource = GetComponent<AudioSource>();
+        playerItems = FindObjectOfType<PlayerItems>(); 
+        UpdateUI(false); // Initially hide the UI
     }
 
     void Update()
     {
-        // Check if the Voice Recorder is the active item
-        bool isHoldingRecorder = playerItems.currentItem == 1; // 1 = Voice Recorder
+        bool isHoldingRecorder = playerItems.currentItem == 1; // Check if the recorder is selected
 
-        if (audioPromptText != null)
+        if (!isHoldingRecorder)
         {
-            audioPromptText.enabled = isHoldingRecorder; // Show prompt when holding recorder
+            if (audioSource.isPlaying) audioSource.Stop(); // Stop playback if the player switches items
+            UpdateUI(false); // Hide UI when not holding the recorder
+            return;
         }
 
-        if (isHoldingRecorder)
-        {
-            HandleAudioLogInput();
-        }
-        else if (currentPlayingAudio != null && currentPlayingAudio.isPlaying)
-        {
-            currentPlayingAudio.Stop(); // Stop audio if item is switched
-            currentPlayingAudio = null;
-        }
-    }
+        UpdateUI(true); // Show UI if holding the recorder
 
-    void HandleAudioLogInput()
-    {
         for (int i = 0; i < audioLogs.Length; i++)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1 + i)) // Detect keys 1-9
+            if (Input.GetKeyDown(KeyCode.Alpha1 + i))
             {
                 PlayAudioLog(i);
             }
@@ -56,15 +39,31 @@ public class AudioLogPlayer : MonoBehaviour
 
     void PlayAudioLog(int index)
     {
-        if (currentPlayingAudio != null)
+        if (index < 0 || index >= audioLogs.Length) return; // Prevent out-of-bounds errors
+
+        if (audioSource.isPlaying)
+            audioSource.Stop(); // Stop any currently playing audio
+
+        audioSource.clip = audioLogs[index]; // Set the new audio clip
+        audioSource.Play(); // Play the audio
+    }
+
+    void UpdateUI(bool show)
+    {
+        if (audioLogUI != null)
         {
-            currentPlayingAudio.Stop(); // Stop any currently playing log
+            audioLogUI.gameObject.SetActive(show);
+            if (show) audioLogUI.text = "Press 1-9 to play audio logs";
         }
 
-        if (index >= 0 && index < audioLogs.Length)
+        if (show != true)
         {
-            currentPlayingAudio = audioLogs[index];
-            currentPlayingAudio.Play();
+            audioLogUI.text = "";
         }
+    }
+
+    public void ForceUIUpdate(bool isHoldingRecorder)
+    {
+        UpdateUI(isHoldingRecorder);
     }
 }

@@ -47,5 +47,12 @@ public class PlayerItems : MonoBehaviour
         // Activate the currently selected item
         if (currentItem == 1) voiceRecorder?.SetActive(true);
         if (currentItem == 2) glowStick?.SetActive(true);
+
+        // Ensure the AudioLogPlayer UI updates correctly
+        AudioLogPlayer audioLogPlayer = FindObjectOfType<AudioLogPlayer>();
+        if (audioLogPlayer != null)
+        {
+            audioLogPlayer.ForceUIUpdate(currentItem == 1); // Pass 'true' if the recorder is active, else 'false'
+        }
     }
 }
