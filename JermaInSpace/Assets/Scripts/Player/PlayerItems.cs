@@ -10,7 +10,7 @@ public class PlayerItems : MonoBehaviour
     public bool hasVoiceRecorder = false;
     public bool hasGlowStick = false;
 
-    private int currentItem = 0; // 0 = None, 1 = Voice Recorder, 2 = Glow Stick
+    public int currentItem { get; private set; }
 
     void Update()
     {
@@ -38,7 +38,7 @@ public class PlayerItems : MonoBehaviour
         UpdateItemState();
     }
 
-    void UpdateItemState()
+    public void UpdateItemState()
     {
         // Disable all items by default
         voiceRecorder?.SetActive(false);
