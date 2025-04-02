@@ -5,6 +5,7 @@ public class GlobalVariables : MonoBehaviour
     public static GlobalVariables Instance { get; private set; }
 
     public bool GeneratorPower = false;
+    public GameObject WindowToHide; // Assign in Inspector
 
     private void Awake()
     {
@@ -16,6 +17,19 @@ public class GlobalVariables : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        HandleObjectVisibility();
+    }
+
+    void HandleObjectVisibility()
+    {
+        if (WindowToHide != null)
+        {
+            WindowToHide.SetActive(!GeneratorPower); // Hide when true, show when false
         }
     }
 }
