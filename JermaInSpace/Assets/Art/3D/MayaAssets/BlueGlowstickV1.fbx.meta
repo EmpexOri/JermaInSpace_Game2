@@ -3,7 +3,12 @@ guid: ce5039ce15cb7ae4392d1759ed69b20d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GlowstickBlue
+    second: {fileID: 2100000, guid: 18c218eeb3edb334c8fc9d6450d767cb, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
