@@ -42,8 +42,8 @@ public class ComputerInteraction : MonoBehaviour, IInteractable
         generator2Button.onClick.AddListener(() => HandleButtonPress(1));
         generator3Button.onClick.AddListener(() => HandleButtonPress(2));
 
-        mouseLook = FindObjectOfType<MouseLook>();
-        playerMovement = FindObjectOfType<PlayerMovement>();
+        mouseLook = FindFirstObjectByType<MouseLook>();
+        playerMovement = FindFirstObjectByType<PlayerMovement>();
     }
 
     void ShuffleGenerators()
@@ -74,7 +74,14 @@ public class ComputerInteraction : MonoBehaviour, IInteractable
 
     void OpenComputerScreen()
     {
+        Debug.Log("Opening computer UI");
         computerScreenUI.SetActive(true);
+
+        if (computerScreenUI.activeSelf)
+        {
+            Debug.Log("Canvas Element On");
+        }
+
         LockCursor(false);
 
         if (playerMovement != null) playerMovement.enabled = false;
@@ -191,7 +198,7 @@ public class ComputerInteraction : MonoBehaviour, IInteractable
 
     void Update()
     {
-        if (isUsingTerminal && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.F)))
+        if (isUsingTerminal && (Input.GetKeyDown(KeyCode.Escape)))
         {
             CloseComputerScreen();
         }
