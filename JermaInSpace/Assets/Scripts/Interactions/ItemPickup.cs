@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour, IInteractable
 {
-    public enum ItemType { VoiceRecorder, GlowStick }
+    public enum ItemType { VoiceRecorder, GlowStick, KeyCard }
     public ItemType itemType;
 
     public void Interact()
@@ -16,13 +16,26 @@ public class ItemPickup : MonoBehaviour, IInteractable
                 case ItemType.VoiceRecorder:
                     playerItems.hasVoiceRecorder = true;
                     break;
+
                 case ItemType.GlowStick:
                     playerItems.hasGlowStick = true;
                     break;
+
+                case ItemType.KeyCard:
+                    playerItems.hasKeycard = true;
+                    break;
+
+                default:
+                    Debug.LogWarning("Unhandled item type picked up.");
+                    break;
             }
 
-            playerItems.UpdateItemState(); // Refresh items
-            Destroy(gameObject); // Remove world item
+            playerItems.UpdateItemState(); // Refresh active items
+            Destroy(gameObject); // Remove item from world
+        }
+        else
+        {
+            Debug.LogWarning("PlayerItems component not found!");
         }
     }
 }

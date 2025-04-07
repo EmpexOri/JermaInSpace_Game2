@@ -5,13 +5,16 @@ public class DoorInteraction : MonoBehaviour, IInteractable
 {
     [Header("Door Settings")]
     public Vector3 slideDirection = Vector3.right; // Default: Moves right
-    public float openDistance = 3f; // How far the door moves
-    public float slideDuration = 1f; // Time to slide
-    public float autoCloseTime = 5f; // Time before auto-close
+    public float openDistance = 3f;
+    public float slideDuration = 1f;
+    public float autoCloseTime = 5f;
 
     [Header("Power Requirements")]
-    public bool requiresGeneratorPower = false; // If true, requires GeneratorPower to open
-    public bool locksWhenPowered = false; // If true, door won't open when GeneratorPower is ON
+    public bool requiresGeneratorPower = false;
+    public bool locksWhenPowered = false;
+
+    [Header("Keycard Settings")]
+    public bool requiresKeycard = false; // NEW: Optional keycard requirement
 
     private Vector3 closedPosition;
     private Vector3 openPosition;
@@ -27,17 +30,19 @@ public class DoorInteraction : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        // Check power conditions before allowing interaction
-        if (locksWhenPowered && GlobalVariables.Instance.GeneratorPower) return; // Locked when power is on
-        if (requiresGeneratorPower && !GlobalVariables.Instance.GeneratorPower) return; // Needs power to open
+        // Power logic
+        if (locksWhenPowered && GlobalVariables.Instance.GeneratorPower) return;
+        if (requiresGeneratorPower && !GlobalVariables.Instance.GeneratorPower) return;
+
+        // Keycard logic
+        if (requiresKeycard && !GlobalVariables.Instance.KeyCardScanned) return;
 
         if (!isMoving)
         {
-            StopAllCoroutines(); // Prevent multiple coroutines running
+            StopAllCoroutines();
             StartCoroutine(isOpen ? MoveDoor(closedPosition) : MoveDoor(openPosition));
             isOpen = !isOpen;
 
-            // If opened, start auto-close timer
             if (isOpen)
             {
                 if (autoCloseCoroutine != null) StopCoroutine(autoCloseCoroutine);

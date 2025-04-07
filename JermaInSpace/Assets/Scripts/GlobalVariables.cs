@@ -6,6 +6,8 @@ public class GlobalVariables : MonoBehaviour
 
     public bool GeneratorPower = false;
     public GameObject WindowToHide; // Assign in Inspector
+    public bool KeyCardScanned = false;
+
 
     private void Awake()
     {

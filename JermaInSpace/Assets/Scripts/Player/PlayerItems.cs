@@ -5,10 +5,12 @@ public class PlayerItems : MonoBehaviour
     [Header("Item Objects")]
     public GameObject voiceRecorder;
     public GameObject glowStick;
+    public GameObject keycard;
 
     [Header("Item States")]
     public bool hasVoiceRecorder = false;
     public bool hasGlowStick = false;
+    public bool hasKeycard = false;
 
     public int currentItem { get; private set; }
 
@@ -22,37 +24,48 @@ public class PlayerItems : MonoBehaviour
 
     void ToggleItem()
     {
-        if (hasVoiceRecorder && hasGlowStick)
+        int maxItems = 4; // 0 = None, 1 = Voice Recorder, 2 = Glow Stick, 3 = Keycard
+        int attempts = 0;
+
+        do
         {
-            currentItem = (currentItem + 1) % 3; // Cycle between 0 (None), 1 (Voice Recorder), 2 (Glow Stick)
+            currentItem = (currentItem + 1) % maxItems;
+            attempts++;
         }
-        else if (hasVoiceRecorder)
-        {
-            currentItem = currentItem == 1 ? 0 : 1; // Toggle between None & Voice Recorder
-        }
-        else if (hasGlowStick)
-        {
-            currentItem = currentItem == 2 ? 0 : 2; // Toggle between None & Glow Stick
-        }
+        while (!IsItemAvailable(currentItem) && attempts < maxItems);
 
         UpdateItemState();
     }
 
+    bool IsItemAvailable(int itemIndex)
+    {
+        return itemIndex switch
+        {
+            0 => true, // None is always available
+            1 => hasVoiceRecorder,
+            2 => hasGlowStick,
+            3 => hasKeycard,
+            _ => false
+        };
+    }
+
     public void UpdateItemState()
     {
-        // Disable all items by default
+        // Disable all items first
         voiceRecorder?.SetActive(false);
         glowStick?.SetActive(false);
+        keycard?.SetActive(false);
 
-        // Activate the currently selected item
+        // Activate selected item
         if (currentItem == 1) voiceRecorder?.SetActive(true);
         if (currentItem == 2) glowStick?.SetActive(true);
+        if (currentItem == 3) keycard?.SetActive(true);
 
-        // Ensure the AudioLogPlayer UI updates correctly
+        // Update UI logic for recorder only
         AudioLogPlayer audioLogPlayer = FindObjectOfType<AudioLogPlayer>();
         if (audioLogPlayer != null)
         {
-            audioLogPlayer.ForceUIUpdate(currentItem == 1); // Pass 'true' if the recorder is active, else 'false'
+            audioLogPlayer.ForceUIUpdate(currentItem == 1);
         }
     }
 }
