@@ -6,19 +6,26 @@ public class BootSequence : MonoBehaviour
 {
     private float timer = 0f;
     private bool hasSwitchedImage = false;
+
+    [Header("Sound Settings")]
     public AudioClip sfx_load;
     public AudioClip sfx_boot;
-    public Texture newBootTexture; 
+    [Range(0f, 1f)] public float bootVolume = 1f;
+    [Range(0f, 1f)] public float loadVolume = 1f;
+
+    [Header("Visuals")]
+    public Texture newBootTexture;
+
     private AudioSource audioSource;
     private bool hasPlayedLoadSound = false;
 
     void Start()
     {
-        // Create an AudioSource (Idk what I'll do here later)
         audioSource = gameObject.AddComponent<AudioSource>();
+
         if (sfx_boot != null)
         {
-            audioSource.PlayOneShot(sfx_boot);
+            audioSource.PlayOneShot(sfx_boot, bootVolume);
         }
     }
 
@@ -28,27 +35,24 @@ public class BootSequence : MonoBehaviour
 
         if (timer >= 7f && !hasPlayedLoadSound)
         {
-            hasPlayedLoadSound = true; // Ensure it doesn't play again
+            hasPlayedLoadSound = true;
             if (sfx_load != null)
             {
-                audioSource.PlayOneShot(sfx_load);
+                audioSource.PlayOneShot(sfx_load, loadVolume);
             }
         }
 
-        // At 8 seconds, change Boot's image & play the audio
         if (timer >= 8f && !hasSwitchedImage)
         {
             RawImage bootImage = GameObject.Find("Boot")?.GetComponent<RawImage>();
-
             if (bootImage != null && newBootTexture != null)
             {
-                bootImage.texture = newBootTexture; // Change the RawImage texture
+                bootImage.texture = newBootTexture;
             }
 
-            hasSwitchedImage = true; // Prevent repeated switching
+            hasSwitchedImage = true;
         }
 
-        // Load the 'Main' scene at 15 seconds
         if (timer >= 15f)
         {
             SceneManager.LoadScene("Main");
